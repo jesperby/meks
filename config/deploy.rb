@@ -28,25 +28,14 @@ set :linked_dirs, %w{log tmp/pids tmp/sockets reports}
 set :default_env, { path: '$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH' }
 set :keep_releases, 5
 
-namespace :unicorn do
-  %w[stop start restart upgrade].each do |command|
-    desc "#{command} unicorn server"
-    task command do
-      on roles(:app), except: {no_release: true} do
-        execute "/etc/init.d/unicorn_#{fetch(:application)} #{command}"
-      end
-    end
-  end
-
-  desc "Stop, paus and start the unicorn server"
-  task :stop_start do
-    on roles(:app) do
-      execute "/etc/init.d/unicorn_#{fetch(:application)} stop && sleep 5 && /etc/init.d/unicorn_#{fetch(:application)} start"
-    end
-  end
-end
-
 namespace :deploy do
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      invoke 'puma:restart'
+    end
+  end
+
   desc "Copy vendor statics"
   task :copy_vendor_statics do
     on roles(:app) do
@@ -93,9 +82,9 @@ namespace :deploy do
     end
   end
 
-  before :starting,       'deploy:are_you_sure'
-  before :starting,       'deploy:check_revision'
-  before :compile_assets, 'deploy:copy_vendor_statics'
-  after  :publishing,     'unicorn:restart'
-  after  :finishing,      'deploy:cleanup'
+  before :starting,       :are_you_sure
+  before :starting,       :check_revision
+  before :compile_assets, :copy_vendor_statics
+  after  :finishing,      :restart
+  after  :finishing,      :cleanup
 end

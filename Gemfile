@@ -36,7 +36,6 @@ group :development do
   gem 'capistrano-rbenv', '2.1.0', require: false
   gem 'capistrano3-puma', require: false
   gem 'pry-rails'
-  gem 'web-console'
   gem 'bullet'
 end
 

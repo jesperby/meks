@@ -22,7 +22,7 @@ DAEMON=$NAME
 SCRIPTNAME=/etc/init.d/$NAME
 CONFIG=/home/app_runner/meks/current/config/puma.conf
 JUNGLE=`cat $CONFIG`
-RUNPUMA=/usr/local/bin/run-puma
+RUNPUMA=/usr/local/bin/run_puma
 USE_LOCAL_BUNDLE=0
 
 # Load the VERBOSE setting and other rcS variables
@@ -147,7 +147,7 @@ do_restart_one() {
     log_daemon_msg "--> Your puma was never playing... Let's get it out there first"
     do_start_one $1
   fi
-	return 0
+  return 0
 }
 
 #
@@ -174,7 +174,7 @@ do_phased_restart_one() {
     log_daemon_msg "--> Your puma was never playing... Let's get it out there first"
     do_start_one $1
   fi
-	return 0
+  return 0
 }
 
 #
@@ -207,7 +207,7 @@ do_status_one() {
   else
     log_daemon_msg "--> $1 isn't there :(..."
   fi
-	return 0
+  return 0
 }
 
 do_add() {
